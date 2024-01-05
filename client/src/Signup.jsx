@@ -25,7 +25,7 @@ export default function Signup() {
                 <h2>Register</h2>
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
-                        <label htmlFor="email">
+                        <label htmlFor="name">
                             <strong>Name</strong>
                         </label>
                         <input 
@@ -51,7 +51,7 @@ export default function Signup() {
                         />
                     </div>
                     <div className="mb-3">
-                        <label htmlFor="email">
+                        <label htmlFor="password">
                             <strong>Password</strong>
                         </label>
                         <input
@@ -68,7 +68,7 @@ export default function Signup() {
                     </button>
                 </form>
                 <p>Already Have an Account</p>
-                    <Link className="btn btn-default border w-100 bg-light rounded-0 text-decoration-none">
+                    <Link to={"/login"} className="btn btn-default border w-100 bg-light rounded-0 text-decoration-none">
                         Login
                     </Link>
             </div>
