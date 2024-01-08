@@ -13,8 +13,13 @@ dotenv.config() //DEVE SER CHAMADO PRIMEIRO SEMPRE!
 connectToDatabase()
 
 const app = express()
-app.use(cors())
 app.use(express.json())
+app.use(cors({
+    origin: ["http://localhost:3000"], //Allowing FRONTEND users from this ORIGIN
+    methods: ["GET","POST","PUT","DELETE"],
+    credentials: true
+}))
+app.use(cookieParser())
 
 //Aqui abaixo teremos nossas rotas:
 app.post('/register', (req,res) => {
@@ -34,6 +39,8 @@ app.post('/login', (req, res) => {
         if(user) {                     // Verifica se o usuário existe no DB      
             bcrypt.compare(password, user.password, (err, response) => { // Compara a senha fornecida com a senha armazenada no DB
                 if(response) {
+                    const token = jwt.sign({email: user.email}, "jwt-secret-key", {expiresIn: "1d"}) //O Token inclui INFOS do USER, nesse caso so EMAIL
+                    res.cookie("token", token) //Enviamos o token no COOKIE
                     res.json("Success") // Se a comparação for bem-sucedida, a senha está correta
                 } else {
                     res.json("Incorrect password")
