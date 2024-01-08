@@ -22,6 +22,7 @@ app.use(cors({
 app.use(cookieParser())
 
 //Aqui abaixo teremos nossas rotas:
+
 app.post('/register', (req,res) => {
     const {name, email, password} = req.body  //Fazemos o desconstructuring para fazer a HASH da PWD com BCRYPT
     bcrypt.hash(password, 10) //O 10 representa o custo do algoritmo de hash bcrypt. 2^10 (1024) vezes para gerar o hash da senha
@@ -30,6 +31,25 @@ app.post('/register', (req,res) => {
         .then(users => res.json(users))
         .catch(err => res.json(err))
     }).catch(err => console.log(err.message))
+})
+
+//Middleware que verificaUser
+const verifyUser = (req, res, next) => { //Usamos o next para passar o CONTROLE para o PROXIMO MIDDLEWARE
+    const token = res.cookies.token
+    console.log(token)
+    if(!token) {
+        return res.json("The token was not available")
+    } else {
+        jwt.verify(token, "jwt-secret-key", (err,decoded) => { //Verificamos o TOKEN presente na MAQUINA 
+            if(err) return res.json("Token is wrong")
+            next()  //Passamos o controle do RETURN para o proximo MIDDLEWARE
+        })
+    }
+}
+
+//Rota para fazer checkAuth do USER
+app.get('/check-auth', verifyUser, (req, res) => {
+    return res.json("Success")
 })
 
 app.post('/login', (req, res) => {
